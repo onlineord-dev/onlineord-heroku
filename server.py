@@ -43,6 +43,45 @@ def user():
     cnx.close()
     return jsonify(response)
 
+@app.route('/users/', methods=['POST'])
+def login():
+    cnx = connection.MySQLConnection(**config)
+    
+    req_email = request.form['email']
+    req_pass = request.form['password']
+    
+    cursor = cnx.cursor(buffered=True)
+    cursor.execute(f"SELECT * FROM users WHERE Email = '{req_email}'")
+
+    if(cursor.rowcount == 1):
+        user = [{
+            'ID': i[0],
+            'Email': i[1],
+            'Name': i[2],
+            'Surame': i[3],
+            'Password': i[4],
+            'Phone_number': i[5]} for i in cursor]
+        
+        if(user[0]['Password'] == req_pass):
+            response = user
+        else:
+            response = [{
+            'error': {
+                'code': 1,
+                'description': "invalid password"
+            }
+        }]
+    else:
+        response = [{
+            'error': {
+                'code': 0,
+                'description': "invalid email"
+            }
+        }]
+
+    cnx.close()
+    return jsonify(response)
+
 @app.route("/")
 def home():
     return "OnlineOrders server works!"
