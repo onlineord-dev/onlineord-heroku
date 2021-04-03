@@ -25,7 +25,7 @@ def user():
             'ID': i[0],
             'Email': i[1],
             'Name': i[2],
-            'Surame': i[3],
+            'Surname': i[3],
             'Password': i[4],
             'Phone_number': i[5]} for i in cursor]
     else:
@@ -36,7 +36,7 @@ def user():
             'ID': i[0],
             'Email': i[1],
             'Name': i[2],
-            'Surame': i[3],
+            'Surname': i[3],
             'Password': i[4],
             'Phone_number': i[5]} for i in cursor]
 
@@ -58,7 +58,7 @@ def login():
             'ID': i[0],
             'Email': i[1],
             'Name': i[2],
-            'Surame': i[3],
+            'Surname': i[3],
             'Password': i[4],
             'Phone_number': i[5]} for i in cursor]
         
@@ -68,14 +68,22 @@ def login():
             response = [{
             'error': {
                 'code': 1,
-                'description': "invalid password"
+                'description': "invalid password",
+                'data': {
+                    'email': req_email,
+                    'password': req_pass
+                }
             }
         }]
     else:
         response = [{
             'error': {
                 'code': 0,
-                'description': "invalid email"
+                'description': "invalid email",
+                'data': {
+                    'email': req_email,
+                    'password': req_pass
+                }
             }
         }]
 
