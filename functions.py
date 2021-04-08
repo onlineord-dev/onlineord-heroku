@@ -49,3 +49,10 @@ def insert_user(cnx, email, password, name, surname, phone_number):
                         '{surname}',\
                         '{phone_number}')")
     cnx.commit()
+
+
+def is_email_exists(cnx, email):
+    cursor = cnx.cursor(buffered=True)
+    cursor.execute(f"SELECT * FROM users WHERE Email = '{email}'")
+
+    return cursor.rowcount == 1

@@ -34,25 +34,16 @@ def user(user_id):
 @app.route('/users/', methods=['POST'])
 def login():
     cnx = connection.MySQLConnection(**config)
-    cursor = cnx.cursor(buffered=True)
 
     req = {
         'email': request.form['email'],
         'password': request.form['password']
     }
 
-    cursor.execute(f"SELECT * FROM users WHERE Email = '{req['email']}'")
+    if db.is_email_exists(cnx, req['email']):
+        user = db.get_user_by_email(cnx, req['email'])
 
-    if(cursor.rowcount == 1):
-        user = [{
-            'ID': i[0],
-            'Email': i[1],
-            'Name': i[2],
-            'Surname': i[3],
-            'Password': i[4],
-            'Phone_number': i[5]} for i in cursor]
-
-        if(user[0]['Password'] == req['password']):
+        if user[0]['Password'] == req['password']:
             response = user
         else:
             response = [{
@@ -78,7 +69,6 @@ def login():
 @app.route('/users/new', methods=['POST'])
 def registration():
     cnx = connection.MySQLConnection(**config)
-    cursor = cnx.cursor(buffered=True)
 
     req = {
         'email': request.form['email'],
@@ -88,11 +78,9 @@ def registration():
         'phone_number': request.form['phone_number']
     }
 
-    cursor.execute(f"SELECT * FROM users WHERE Email = '{req['email']}'")
-
-    if(cursor.rowcount == 0):
+    if not db.is_email_exists(cnx, req['email']):
         db.insert_user(cnx, req['email'], req['password'],
-                    req['name'], req['surname'], req['phone_number'])
+                       req['name'], req['surname'], req['phone_number'])
         response = db.get_user_by_email(cnx, req['email'])
     else:
         response = [{
@@ -109,8 +97,89 @@ def registration():
 
 @app.route('/menu', methods=['POST'])
 def get_menu():
+    cnx = connection.MySQLConnection(**config)
 
-    return 0
+    req = {
+        "organization_id": request.form['organization_id'],
+        "table": request.form['table']
+    }
+
+    response = {
+        "menu": [
+            {
+                "submenu_id": 0,
+                "submenu_name": "Гарячі страви",
+                "items": [
+                    {
+                        "id": 0,
+                        "name": "Name",
+                        "description": "Lorem ipsum dolor sit amet.",
+                        "image": "image.jpg",
+                        "price": 128
+                    },
+                    {
+                        "id": 1,
+                        "name": "Name",
+                        "description": "Lorem ipsum dolor sit amet.",
+                        "image": "image.jpg",
+                        "price": 128
+                    }
+                ]
+            },
+            {
+                "submenu_id": 1,
+                "submenu_name": "Закуски",
+                "items": [
+                    {
+                        "id": 2,
+                        "name": "Name",
+                        "description": "Lorem ipsum dolor sit amet.",
+                        "image": "image.jpg",
+                        "price": 128
+                    },
+                    {
+                        "id": 3,
+                        "name": "Name",
+                        "description": "Lorem ipsum dolor sit amet.",
+                        "image": "image.jpg",
+                        "price": 128
+                    }
+                ]
+            }
+        ],
+        "discounts": [
+            {
+                "id": 5,
+                "name": "Name",
+                "description": "Lorem ipsum dolor sit amet.",
+                "image": "image.jpg",
+                "price": 128
+            },
+            {
+                "id": 6,
+                "name": "Name",
+                "description": "Lorem ipsum dolor sit amet.",
+                "image": "image.jpg",
+                "price": 128
+            }
+        ],
+        "dish_of_the_day": {
+            "id": 7,
+            "name": "Name",
+            "description": "Lorem ipsum dolor sit amet.",
+            "image": "image.jpg",
+            "price": 128
+        },
+        "dish_of_the_week": {
+            "id": 7,
+            "name": "Name",
+            "description": "Lorem ipsum dolor sit amet.",
+            "image": "image.jpg",
+            "price": 128
+        }
+    }
+    cnx.close()
+    return response
 
 
 @app.route("/")
