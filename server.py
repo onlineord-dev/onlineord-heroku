@@ -1,4 +1,6 @@
-from flask import Flask, request, jsonify
+import json
+import qrcode
+from flask import Flask, request, jsonify, send_file
 from mysql.connector import (connection)
 
 import functions as db
@@ -180,6 +182,35 @@ def get_menu():
     }
     cnx.close()
     return response
+
+
+@app.route('/qr', methods=['POST'])
+def generate_qr():
+    cnx = connection.MySQLConnection(**config)
+
+    req = {
+        "organization_id": request.form['organization_id'],
+        "table": request.form['table'],
+        "on_table": request.form['on_table']
+    }
+
+    json_string = json.dumps(req, skipkeys=True)
+
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(json_string)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill='black', back_color='white')
+    filename = 'tmp/qr.png'
+    img.save(filename)
+
+    cnx.close()
+    return send_file(filename, mimetype='image/gif')
 
 
 @app.route("/")
