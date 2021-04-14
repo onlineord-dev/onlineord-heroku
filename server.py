@@ -103,7 +103,7 @@ def get_menu():
 
     req = {
         "organization_id": request.form['organization_id'],
-        "table": request.form['table']
+        "table_id": request.form['table_id']
     }
 
     response = {
@@ -190,7 +190,7 @@ def generate_qr():
 
     req = {
         "organization_id": request.form['organization_id'],
-        "table": request.form['table'],
+        "table_id": request.form['table_id'],
         "on_table": request.form['on_table']
     }
 
