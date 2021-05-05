@@ -40,6 +40,33 @@ def get_user_by_email(cnx, email):
     return res
 
 
+def get_submenus(cnx, organization_id):
+    cursor = cnx.cursor()
+    cursor.execute(f"SELECT s.ID, s.submenu_name\
+                FROM sub_menu AS s \
+                INNER JOIN menu AS m \
+                ON s.menu_id = m.ID \
+                WHERE m.Organization_id = {organization_id}")
+    submenus = [{
+        'submenu_id': i[0],
+        'submenu_name': i[1],
+        'items': []} for i in cursor]
+
+    for i in submenus:
+        cursor.execute(
+            f"SELECT * FROM food WHERE Submenu_id = {i['submenu_id']}")
+        item = [{
+            'id': j[0],
+            'price': j[1],
+            'name': j[2],
+            'description': 'food',
+            'image': j[4],
+            'weight': j[5]} for j in cursor]
+        i['items'] = item
+
+    return submenus
+
+
 def insert_user(cnx, email, password, name, surname, phone_number):
     cursor = cnx.cursor()
     cursor.execute(f"INSERT INTO users (Email, Passwords, Name, Surname, Phone_number) VALUES (\

@@ -107,48 +107,7 @@ def get_menu():
     }
 
     response = {
-        "menu": [
-            {
-                "submenu_id": 0,
-                "submenu_name": "Гарячі страви",
-                "items": [
-                    {
-                        "id": 0,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    },
-                    {
-                        "id": 1,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    }
-                ]
-            },
-            {
-                "submenu_id": 1,
-                "submenu_name": "Закуски",
-                "items": [
-                    {
-                        "id": 2,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    },
-                    {
-                        "id": 3,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    }
-                ]
-            }
-        ],
+        'menu': [],
         "discounts": [
             {
                 "id": 5,
@@ -180,6 +139,8 @@ def get_menu():
             "price": 128
         }
     }
+    
+    response['menu'] = db.get_submenus(cnx, req['organization_id'])
     cnx.close()
     return response
 
