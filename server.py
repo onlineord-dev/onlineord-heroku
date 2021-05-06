@@ -107,48 +107,7 @@ def get_menu():
     }
 
     response = {
-        "menu": [
-            {
-                "submenu_id": 0,
-                "submenu_name": "Гарячі страви",
-                "items": [
-                    {
-                        "id": 0,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    },
-                    {
-                        "id": 1,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    }
-                ]
-            },
-            {
-                "submenu_id": 1,
-                "submenu_name": "Закуски",
-                "items": [
-                    {
-                        "id": 2,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    },
-                    {
-                        "id": 3,
-                        "name": "Name",
-                        "description": "Lorem ipsum dolor sit amet.",
-                        "image": "image.jpg",
-                        "price": 128
-                    }
-                ]
-            }
-        ],
+        'menu': [],
         "discounts": [
             {
                 "id": 5,
@@ -180,18 +139,18 @@ def get_menu():
             "price": 128
         }
     }
+    
+    response['menu'] = db.get_submenus(cnx, req['organization_id'])
     cnx.close()
     return response
 
 
-@app.route('/qr', methods=['POST'])
+@app.route('/qrcode', methods=['POST'])
 def generate_qr():
-    cnx = connection.MySQLConnection(**config)
-
     req = {
-        "organization_id": request.form['organization_id'],
-        "table_id": request.form['table_id'],
-        "on_table": request.form['on_table']
+        "organization_id": int(request.form['organization_id']),
+        "table_id": int(request.form['table_id']),
+        "on_table": bool(request.form['on_table'])
     }
 
     json_string = json.dumps(req, skipkeys=True)
@@ -209,7 +168,6 @@ def generate_qr():
     filename = 'tmp/qr.png'
     img.save(filename)
 
-    cnx.close()
     return send_file(filename, mimetype='image/gif')
 
 
