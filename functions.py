@@ -52,6 +52,8 @@ def get_submenus(cnx, organization_id):
         'submenu_name': i[1],
         'items': []} for i in cursor]
 
+    submenu_cnt = len(submenus)
+    
     for i in submenus:
         cursor.execute(
             f"SELECT * FROM food WHERE Submenu_id = {i['submenu_id']}")
@@ -64,7 +66,7 @@ def get_submenus(cnx, organization_id):
             'weight': j[5]} for j in cursor]
         i['items'] = item
 
-    return submenus
+    return (submenus, submenu_cnt)
 
 
 def insert_user(cnx, email, password, name, surname, phone_number):

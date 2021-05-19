@@ -107,6 +107,7 @@ def get_menu():
     }
 
     response = {
+        'submenu_count': 0,
         'menu': [],
         "discounts": [
             {
@@ -139,8 +140,9 @@ def get_menu():
             "price": 128
         }
     }
-    
-    response['menu'] = db.get_submenus(cnx, req['organization_id'])
+    submenus, submenu_cnt = db.get_submenus(cnx, req['organization_id'])
+    response['menu'] = submenus
+    response['submenu_count'] = submenu_cnt
     cnx.close()
     return response
 
