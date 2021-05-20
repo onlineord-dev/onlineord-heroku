@@ -61,10 +61,11 @@ def get_submenus(cnx, organization_id):
             'id': j[0],
             'price': j[1],
             'name': j[2],
-            'description': 'food',
+            'description': j[6],
             'image': j[4],
             'weight': j[5]} for j in cursor]
         i['items'] = item
+        i['items_count'] = len(item)
 
     return (submenus, submenu_cnt)
 
